@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Girlfriend</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Kalam:wght@300;400;700&family=Handlee&family=Permanent+Marker&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Playfair Display', serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            background-color: #361546;
+            color: white;
+        }
+        .container {
+            width: 100vw;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .play-button {
+            background: white;
+            color: #361546;
+            border: none;
+            padding: clamp(15px, 4vw, 25px) clamp(30px, 8vw, 50px);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-family: 'Playfair Display', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            max-width: 90vw;
+        }
+        .play-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+        .animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            display: none;
+            overflow: hidden;
+        }
+        .text-display {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(1.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            text-align: center;
+            z-index: 30;
+            width: 90%;
+            max-width: 95%;
+            font-family: 'Kalam', cursive;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        .text-display.cursive {
+            font-style: italic;
+            font-weight: 900;
+        }
+        .word {
+            opacity: 0;
+            display: inline-block;
+            margin-right: 0.2em;
+            animation: fadeInWord 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeInWord {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .background-white {
+            background-color: white;
+            color: #361546;
+            transition: background-color 0.8s ease, color 0.8s ease;
+        }
+        .background-purple {
+            background-color: #361546;
+            color: white;
+            transition: background-color 0.8s ease, color 0.8s ease;
+        }
+
+        .wallet-container {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            perspective: 2000px;
+            z-index: 5;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wallet-closed {
+            width: clamp(300px, 70vw, 600px);
+            height: clamp(200px, 35vw, 375px);
+            background:
+                linear-gradient(to right, transparent 45%, rgba(212,175,55,0.7) 45%, rgba(212,175,55,0.7) 55%, transparent 55%) 50% 15% / 70% 4px no-repeat,
+                linear-gradient(to right, transparent 45%, rgba(212,175,55,0.7) 45%, rgba(212,175,55,0.7) 55%, transparent 55%) 50% 85% / 70% 4px no-repeat,
+                linear-gradient(145deg,
+                    #5D4037 0%,
+                    #8B4513 15%,
+                    #A1887F 30%,
+                    #8B4513 50%,
+                    #6D4C41 65%,
+                    #5D4037 80%,
+                    #3E2723 100%
+                );
+            border: 3px solid #3E2723;
+            border-radius: 15px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px) scale(0.8);
+            transition: all 0.8s ease;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 2px 10px rgba(0, 0, 0, 0.4),
+                inset 0 -2px 5px rgba(255, 255, 255, 0.1);
+            max-width: 95vw;
+        }
+
+        .wallet-closed::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(20px, 5vw, 30px);
+            background: linear-gradient(180deg, #FFD700, #D4AF37, #B8860B);
+            border: 2px solid #8B7500;
+            border-radius: 8px;
+            box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.3),
+                0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .wallet-closed.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .wallet-open {
+            display: none;
+            width: clamp(400px, 80vw, 900px);
+            height: clamp(250px, 40vw, 450px);
+            perspective: 2000px;
+            position: relative;
+            opacity: 1;
+            transition: opacity 0.8s ease;
+            max-width: 95vw;
+        }
+
+        .wallet-open.show {
+            display: flex;
+        }
+
+        .wallet-open.fade-out {
+            opacity: 0;
+        }
+
+        .wallet-side {
+            position: relative;
+            width: 48%;
+            height: 100%;
+            background:
+                linear-gradient(145deg,
+                    #5D4037 0%,
+                    #8B4513 15%,
+                    #A1887F 30%,
+                    #8B4513 50%,
+                    #6D4C41 65%,
+                    #5D4037 80%,
+                    #3E2723 100%
+                );
+            border: 3px solid #3E2723;
+            border-radius: 15px;
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.5),
+                inset 0 3px 8px rgba(0, 0, 0, 0.4),
+                inset 0 -3px 8px rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            margin: 0 1%;
+        }
+
+        .wallet-left {
+            transform: rotateY(-170deg);
+            transform-origin: right center;
+        }
+
+        .wallet-right {
+            transform: rotateY(170deg);
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0.2s;
+            transform-origin: left center;
+        }
+
+        .wallet-open.show .wallet-left {
+            transform: rotateY(0deg);
+        }
+
+        .wallet-open.show .wallet-right {
+            transform: rotateY(0deg);
+        }
+
+        .wallet-connector {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4%;
+            height: 80%;
+            background: #3E2723;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            border-radius: 5px;
+        }
+
+        .wallet-content {
+            padding: clamp(15px, 3vw, 30px);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transform: translateZ(10px);
+        }
+
+        .money, .credit-card, .middle-item {
+            height: clamp(40px, 7vw, 80px);
+            border-radius: 8px;
+            margin-bottom: clamp(8px, 1.5vw, 15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.7rem, 2vw, 1.1rem);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-weight: bold;
+            font-family: 'Kalam', cursive;
+            overflow: hidden;
+            background: white;
+            color: #333;
+            border: 2px solid #ccc;
+        }
+
+        .money {
+            background: white;
+            color: #2d5a2d;
+            border: 2px solid #4a704a;
+        }
+
+        .credit-card {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6, #1e40af);
+            color: white;
+            font-size: clamp(0.6rem, 1.6vw, 0.9rem);
+            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4);
+            border-radius: 12px;
+            border: 2px solid #1e3a8a;
+        }
+        .credit-card .item-image {
+            border-radius: 10px;
+        }
+
+        .middle-item {
+            background: white;
+            color: #333;
+            border: 2px solid #666;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+        }
+
+        /* Updated Polaroid Style for Photo in Wallet */
+        .photo-in-wallet {
+            width: 70%;
+            height: 60%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-in-wallet .photo-area {
+            flex: 1;
+            padding: 4%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-in-wallet .photo-area .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            border-radius: 8px;
+        }
+
+        .photo-in-wallet .photo-text {
+            height: 25%;
+            background: #bcb8b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Permanent Marker', cursive;
+            font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+            color: #222;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Enhanced Photo Frame Styles */
+        .photo-frame {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: clamp(250px, 60vw, 500px);
+            height: clamp(300px, 75vw, 625px);
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            padding: clamp(15px, 3vw, 25px);
+            padding-bottom: clamp(40px, 6vw, 65px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 15;
+            max-width: 90vw;
+            display: none;
+        }
+
+        .photo-frame.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .photo-frame.slide-in-left {
+            transform: translate(-150%, -50%) scale(0.9) rotate(-25deg);
+            animation: slideInLeft 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+
+        .photo-frame.slide-in-right {
+            transform: translate(50%, -50%) scale(0.9) rotate(25deg);
+            animation: slideInRight 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+
+        .photo-frame.slide-out-left {
+            animation: slideOutLeft 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+        }
+
+        .photo-frame.slide-out-right {
+            animation: slideOutRight 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+        }
+
+
+        @keyframes slideInLeft {
+            0% {
+                transform: translate(-150%, -50%) scale(0.9) rotate(-25deg);
+                opacity: 0;
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.05) rotate(-8deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(-5deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            0% {
+                transform: translate(50%, -50%) scale(0.9) rotate(25deg);
+                opacity: 0;
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.05) rotate(8deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(5deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutLeft {
+            0% {
+                transform: translate(-50%, -50%) scale(1) rotate(-5deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-150%, -50%) scale(0.8) rotate(-25deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideOutRight {
+            0% {
+                transform: translate(-50%, -50%) scale(1) rotate(5deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(50%, -50%) scale(0.8) rotate(25deg);
+                opacity: 0;
+            }
+        }
+
+        .photo-container {
+            width: 100%;
+            height: 75%;
+            background: #f0f0f0;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.9rem, 3vw, 1.8rem);
+            color: #666;
+            margin-bottom: clamp(12px, 2.5vw, 20px);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+            font-family: 'Kalam', cursive;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-container .item-image {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            transform: scale(1.1);
+        }
+
+        .photo-container .item-image.fade-in {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .photo-caption {
+            text-align: center;
+            font-size: clamp(1rem, 4vw, 2rem);
+            color: #333;
+            font-weight: 600;
+            background: #f8f8f8;
+            border-radius: 8px;
+            margin-top: clamp(8px, 1.5vw, 12px);
+            font-family: 'Kalam', cursive;
+            transform: translateY(10px);
+            transition: all 0.6s ease;
+        }
+
+        .photo-caption.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Final Two Photos Layout */
+        .final-photos {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 70%;
+            display: none;
+            z-index: 20;
+        }
+
+        .final-photos.show {
+            display: block;
+        }
+
+        .final-photo {
+            position: absolute;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            padding: clamp(10px, 2vw, 20px);
+            padding-bottom: clamp(25px, 4vw, 40px);
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+
+        .final-photo.first {
+            width: clamp(150px, 35vw, 300px);
+            height: clamp(190px, 45vw, 380px);
+            top: 20%;
+            left: 25%;
+            transform: rotate(-12deg) scale(0.8);
+        }
+
+        .final-photo.second {
+            width: clamp(150px, 35vw, 300px);
+            height: clamp(190px, 45vw, 380px);
+            top: 40%;
+            right: 25%;
+            transform: rotate(15deg) scale(0.8);
+        }
+
+        .final-photo.show {
+            opacity: 1;
+            transform: rotate(-12deg) scale(1);
+        }
+
+        .final-photo.second.show {
+            transform: rotate(15deg) scale(1);
+        }
+
+        .final-photo-container {
+            width: 100%;
+            height: 75%;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: clamp(8px, 1.5vw, 15px);
+        }
+
+        .final-photo-caption {
+            text-align: center;
+            font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+            color: #333;
+            font-weight: 600;
+            background: #f8f8f8;
+            padding: clamp(4px, 1vw, 8px);
+            border-radius: 6px;
+            font-family: 'Kalam', cursive;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            .text-display {
+                top: 5%;
+                font-size: clamp(1.3rem, 6vw, 2.8rem);
+                width: 92%;
+            }
+            .wallet-container {
+                top: 58%;
+                transform: translate(-50%, -50%);
+            }
+            .wallet-open {
+                flex-direction: column;
+                height: auto;
+                width: 90vw;
+                max-height: 70vh;
+            }
+            .wallet-side {
+                width: 95%;
+                height: clamp(180px, 35vw, 280px);
+                margin: 5px auto;
+                transform: none !important;
+                transition: none;
+            }
+            .wallet-connector {
+                display: none;
+            }
+            .photo-frame {
+                top: 60%;
+                width: clamp(220px, 85vw, 400px);
+                height: clamp(280px, 100vw, 500px);
+                transform: translate(-50%, -50%) scale(0.85);
+            }
+            .photo-frame.show {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            .final-photo.first {
+                top: 15%;
+                left: 15%;
+                width: clamp(120px, 40vw, 200px);
+                height: clamp(150px, 50vw, 250px);
+            }
+            .final-photo.second {
+                top: 45%;
+                right: 15%;
+                width: clamp(120px, 40vw, 200px);
+                height: clamp(150px, 50vw, 250px);
+            }
+        }
+        @media (max-width: 480px) {
+            .text-display {
+                font-size: clamp(1.1rem, 7vw, 2.5rem);
+            }
+            .play-button {
+                padding: clamp(12px, 5vw, 20px) clamp(25px, 10vw, 40px);
+                font-size: clamp(1.3rem, 5vw, 2.2rem);
+            }
+            .wallet-container {
+                top: 60%;
+            }
+            .wallet-closed {
+                width: clamp(250px, 85vw, 450px);
+                height: clamp(170px, 30vw, 300px);
+            }
+            .photo-frame {
+                top: 63%;
+                width: clamp(200px, 90vw, 350px);
+                height: clamp(250px, 110vw, 450px);
+                padding: clamp(12px, 4vw, 20px);
+                padding-bottom: clamp(35px, 8vw, 55px);
+            }
+            .final-photo.first {
+                top: 10%;
+                left: 10%;
+                width: clamp(100px, 45vw, 160px);
+                height: clamp(130px, 55vw, 200px);
+            }
+            .final-photo.second {
+                top: 50%;
+                right: 10%;
+                width: clamp(100px, 45vw, 160px);
+                height: clamp(130px, 55vw, 200px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="play-button" onclick="startAnimation()">▶ Play</button>
+        <div class="animation-container" id="animationContainer">
+            <div class="text-display" id="textDisplay"></div>
+            <div class="wallet-container">
+                <div class="wallet-closed" id="walletClosed">
+                </div>
+                <div class="wallet-open" id="walletOpen">
+                    <div class="wallet-connector"></div>
+                    <div class="wallet-side wallet-left">
+                        <div class="wallet-content">
+                            <div class="money">
+                                <img src="10-rupees-note.jpg" alt="10 Rupees Note" class="item-image">
+                            </div>
+                            <div class="middle-item">
+                                <img src="snoopy.png" alt="Middle Item" class="item-image">
+                            </div>
+                            <div class="credit-card">
+                                <img src="platnium-card.jpeg" alt="NABIL BANK CARD" class="item-image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wallet-side wallet-right">
+                        <div class="wallet-content" style="align-items: center; justify-content: center;">
+                            <div class="photo-in-wallet">
+                                <div class="photo-area">
+                                    <img src="photo-1.png" alt="Girlfriend Photo" class="item-image">
+                                </div>
+                                <div class="photo-text">My Love</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="photo-frame" id="photoFrame">
+                <div class="photo-container">
+                    <img src="photo-2.png" alt="Photo Frame" class="item-image">
+                </div>
+                <div class="photo-caption" id="photoCaption">GIRLFRIEND</div>
+            </div>
+            <div class="final-photos" id="finalPhotos">
+                <div class="final-photo first">
+                    <div class="final-photo-container">
+                        <img src="photo-6.png" alt="Memory 1" class="item-image">
+                    </div>
+                    <div class="final-photo-caption">I LOVE YOU</div>
+                </div>
+                <div class="final-photo second">
+                    <div class="final-photo-container">
+                        <img src="photo-7.png" alt="Memory 2" class="item-image">
+                    </div>
+                    <div class="final-photo-caption">MWAH</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio id="backgroundMusic" onended="fadeOutImages()">
+        <source src="videoplayback.m4a" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        const animations = [
+            { time: 500, text: "EVERYWHERE", bg: "white", duration: 1000 },
+            { time: 1500, text: "I go I keep her picture", bg: "purple", duration: 1000 },
+            { time: 2500, text: "in my wallet", bg: "white", duration: 1000 },
+            { time: 3500, text: "like here", bg: "purple", duration: 1000 },
+            { time: 4500, text: "take a look at", bg: "white", duration: 1000 },
+            { time: 5500, text: "GIRLFRIEND", bg: "white", duration: 1000, cursive: true },
+            { time: 6500, text: "she is the only one I got", bg: "purple", duration: 1500 },
+            { time: 8000, text: "Ba-Ba", bg: "white", duration: 500 },
+            { time: 8500, text: "Ba-Ba-Da-Da", bg: "purple", duration: 1000 },
+            { time: 9500, text: "", bg: "purple", duration: 1000 },
+            { time: 10500, text: "Not much of a girlfriend", bg: "white", duration: 2000 },
+            { time: 12500, text: "I never seem to get a lot", bg: "purple", duration: 2000 },
+            { time: 14500, text: "Ba-ba", bg: "white", duration: 500 },
+            { time: 15000, text: "Ba-Ba-Da-Da", bg: "purple", duration: 2000 }
+        ];
+
+        const photoData = [
+            { src: "photo-8.png", caption: "HAPPY" },
+            { src: "photo-2.png", caption: "GIRLFRIENDS" },
+            { src: "photo-3.jpg", caption: "DAY" },
+            { src: "photo-4.png", caption: "APEKSHYA" },
+            { src: "photo-5.png", caption: "" }
+        ];
+
+        let currentAnimation = 0;
+        let animationTimeouts = [];
+        let currentPhotoIndex = 0;
+        let photoSequenceInterval;
+
+        function startAnimation() {
+            const music = document.getElementById('backgroundMusic');
+            music.volume = 0.3;
+            music.play().catch(e => console.log("Audio play failed:", e));
+
+            document.querySelector('.play-button').style.display = 'none';
+
+            const animationContainer = document.getElementById('animationContainer');
+            animationContainer.style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('walletClosed').classList.add('show');
+            }, 500);
+
+            setTimeout(() => {
+                const walletClosed = document.getElementById('walletClosed');
+                const walletOpen = document.getElementById('walletOpen');
+
+                walletClosed.style.opacity = '0';
+                walletClosed.style.transition = 'opacity 0.5s ease';
+
+                setTimeout(() => {
+                    walletClosed.style.display = 'none';
+                    walletOpen.classList.add('show');
+                }, 500);
+
+            }, 2000);
+
+            // Start photo frame sequence after wallet disappears
+            setTimeout(() => {
+                const walletOpen = document.getElementById('walletOpen');
+                walletOpen.classList.add('fade-out');
+
+                setTimeout(() => {
+                    walletOpen.style.display = 'none';
+                    startPhotoSequence();
+                }, 750);
+
+            }, 4000);
+
+            // Show final two photos at the end of song
+            setTimeout(() => {
+                stopPhotoSequence();
+                document.getElementById('photoFrame').style.display = 'none';
+                showFinalPhotos();
+            }, 14000); // Changed from 9000 to 14000 to last longer
+
+            setTimeout(() => {
+                document.getElementById('textDisplay').style.display = 'none';
+            }, 17500);
+
+            animations.forEach((anim, index) => {
+                const timeout = setTimeout(() => {
+                    showText(anim.text, anim.bg, anim.cursive || false);
+                }, anim.time);
+                animationTimeouts.push(timeout);
+            });
+        }
+
+        function startPhotoSequence() {
+            const photoFrame = document.getElementById('photoFrame');
+            photoFrame.style.display = 'block';
+            
+            // Start the continuous photo sequence
+            showNextPhoto();
+            
+            // Set up interval to show photos every 2 seconds instead of 1
+            photoSequenceInterval = setInterval(() => {
+                showNextPhoto();
+            }, 2000);
+        }
+
+        function stopPhotoSequence() {
+            if (photoSequenceInterval) {
+                clearInterval(photoSequenceInterval);
+                photoSequenceInterval = null;
+            }
+        }
+
+        function showNextPhoto() {
+            if (currentPhotoIndex >= photoData.length) {
+                currentPhotoIndex = 0; // Loop back to start
+            }
+
+            const photoFrame = document.getElementById('photoFrame');
+            const photoContainer = photoFrame.querySelector('.photo-container');
+            const photoImage = photoContainer.querySelector('.item-image');
+            const photoCaption = document.getElementById('photoCaption');
+            
+            const currentPhoto = photoData[currentPhotoIndex];
+            
+            // Determine slide direction (alternate between left and right)
+            const slideFromLeft = currentPhotoIndex % 2 === 0;
+            
+            // If there's already a photo showing, slide it out first
+            if (photoFrame.classList.contains('show')) {
+                // Add slide out animation
+                if (slideFromLeft) {
+                    photoFrame.classList.add('slide-out-right');
+                } else {
+                    photoFrame.classList.add('slide-out-left');
+                }
+                
+                // Remove all animation classes after slide out
+                setTimeout(() => {
+                    photoFrame.className = 'photo-frame';
+                    photoFrame.style.display = 'block';
+                    
+                    // Start slide in animation after brief delay
+                    setTimeout(() => {
+                        slideInNewPhoto(currentPhoto, slideFromLeft);
+                    }, 200);
+                }, 800);
+            } else {
+                // First photo - just slide in
+                slideInNewPhoto(currentPhoto, slideFromLeft);
+            }
+            
+            currentPhotoIndex++;
+        }
+
+        function slideInNewPhoto(photoData, slideFromLeft) {
+            const photoFrame = document.getElementById('photoFrame');
+            const photoContainer = photoFrame.querySelector('.photo-container');
+            const photoImage = photoContainer.querySelector('.item-image');
+            const photoCaption = document.getElementById('photoCaption');
+            
+            // Reset image opacity and caption
+            photoImage.classList.remove('fade-in');
+            photoCaption.classList.remove('show');
+            
+            // Set new image and caption
+            photoImage.src = photoData.src;
+            photoCaption.textContent = photoData.caption;
+            
+            // Add slide in animation
+            if (slideFromLeft) {
+                photoFrame.classList.add('slide-in-left');
+            } else {
+                photoFrame.classList.add('slide-in-right');
+            }
+            
+            photoFrame.classList.add('show');
+            
+            // Fade in image after slide animation starts
+            setTimeout(() => {
+                photoImage.classList.add('fade-in');
+            }, 600);
+            
+            // Show caption after image fades in
+            setTimeout(() => {
+                photoCaption.classList.add('show');
+            }, 1000);
+            
+            // Add floating animation after everything is settled
+            setTimeout(() => {
+                photoFrame.classList.remove('slide-in-left', 'slide-in-right');
+                
+                // Randomly choose between floating animations
+                const animations = ['floating', 'gentle-sway', 'pulse'];
+                const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+                photoFrame.classList.add(randomAnimation);
+            }, 1200);
+        }
+
+        function showFinalPhotos() {
+            const finalPhotos = document.getElementById('finalPhotos');
+            finalPhotos.classList.add('show');
+            
+            const firstPhoto = finalPhotos.querySelector('.first');
+            const secondPhoto = finalPhotos.querySelector('.second');
+            
+            // Show first photo
+            setTimeout(() => {
+                firstPhoto.classList.add('show');
+            }, 200);
+            
+            // Show second photo after 1 second
+            setTimeout(() => {
+                secondPhoto.classList.add('show');
+            }, 1200);
+        }
+
+        function showText(text, background, cursive = false) {
+            const container = document.getElementById('animationContainer');
+            const textDisplay = document.getElementById('textDisplay');
+
+            container.className = 'animation-container';
+            textDisplay.className = 'text-display';
+
+            if (background === 'white') {
+                container.classList.add('background-white');
+            } else if (background === 'purple') {
+                container.classList.add('background-purple');
+            }
+
+            if (cursive) {
+                textDisplay.classList.add('cursive');
+            }
+
+            textDisplay.innerHTML = '';
+            if (text === '') {
+                return;
+            }
+            const words = text.split(' ');
+            words.forEach((word, index) => {
+                const span = document.createElement('span');
+                span.className = 'word';
+                span.textContent = word;
+                span.style.animationDelay = `${index * 0.2}s`;
+                textDisplay.appendChild(span);
+            });
+        }
+
+        function fadeOutImages() {
+            setTimeout(() => {
+                const images = document.querySelectorAll('.item-image');
+                images.forEach(img => {
+                    img.style.opacity = '0';
+                    img.style.transition = 'opacity 1s ease';
+                });
+                const finalPhotos = document.querySelectorAll('.final-photo');
+                finalPhotos.forEach(photo => {
+                    photo.style.opacity = '0';
+                    photo.style.transition = 'opacity 1s ease';
+                });
+                const photoFrame = document.getElementById('photoFrame');
+                if (photoFrame && !photoFrame.classList.contains('hidden')) {
+                    photoFrame.style.opacity = '0';
+                    photoFrame.style.transition = 'opacity 1s ease';
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
